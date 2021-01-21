@@ -139,13 +139,8 @@ module Fluent::Plugin
         handle_retrying_connection_with_a_lag(e, "The other error occurs in #{current_plugin_name}.")
         raise StandardError, "The other error occurs."
       rescue MQTT::NotConnectedException=> e
-        # Since MQTT::NotConnectedException is raised only on publish,
-        # connection error should be catched before this error.
-        # So, reconnection process is omitted for this Exception
-        # to prevent waistful increment of retry interval.
-        #log.error "MQTT not connected exception occurs.,#{e.class},#{e.message}"
-        #retry_connect(e, "MQTT not connected exception occurs.")
-        raise MqttError, "MQTT not connected exception occurs in #{current_plugin_name}."
+        handle_retrying_connection_with_a_lag(e, "MQTT not connected exception occurs in #{current_plugin_name}.")
+        raise MqttError, "MQTT not connected exception occurs."
       end
     end
 
